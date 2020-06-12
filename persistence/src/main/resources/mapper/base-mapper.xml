@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.shh.persistence.dao.base.BaseIbatisDao">
+
+    <select id="find" parameterType="com.shh.persistence.entity.CrudEntity" resultType="hashmap">
+        select
+        <choose>
+            <when test="colNames!=null">
+                <foreach item="colName" index="index" collection="colNames"
+                         separator=",">
+                    ${colName}
+                </foreach>
+            </when>
+            <otherwise>
+                *
+            </otherwise>
+        </choose>
+        from ${tableName}
+
+        <if test="(likePairs!=null and likePairs.size()!=0) or (paraMap!=null and paraMap.size()!=0)">
+            <where>
+                <if test="likePairs!=null and likePairs.size()!=0">
+                    <foreach collection="likePairs" item="value" index="key" separator="and">
+                        ${key} LIKE CONCAT('%','${ value}','%')
+                    </foreach>
+                </if>
+                <if test="paraMap!=null and paraMap.size()!=0 and likePairs!=null and likePairs.size()!=0">
+                    and
+                </if>
+                <if test="paraMap!=null and paraMap.size()!=0">
+                    <foreach collection="paraMap" item="value" index="key" separator="and">
+                        ${key} = '${value}'
+                    </foreach>
+                </if>
+            </where>
+        </if>
+
+        <if test="arrangeKey!=null">
+            order by ${arrangeKey} ${order}
+        </if>
+
+    </select>
+
+    <insert id="addAuto" parameterType="crud" useGeneratedKeys="true" keyProperty="crud.primPropName"
+            keyColumn="crud.primKey">
+        <selectKey resultType="java.lang.Object" keyProperty="primVal" order="AFTER">
+            SELECT
+            LAST_INSERT_ID()
+        </selectKey>
+        insert into ${tableName}
+        <foreach item="value" index="key" collection="paraMap"
+                 open="(" separator="," close=")">
+            ${key}
+        </foreach>
+        values
+        <foreach item="value" index="key" collection="paraMap"
+                 open="(" separator="," close=")">
+            #{value}
+        </foreach>
+
+    </insert>
+
+    <insert id="add" parameterType="crud" useGeneratedKeys="false">
+        insert into ${tableName}
+        <foreach item="value" index="key" collection="paraMap"
+                 open="(" separator="," close=")">
+            ${key}
+        </foreach>
+        values
+        <foreach item="value" index="key" collection="paraMap"
+                 open="(" separator="," close=")">
+            #{value}
+        </foreach>
+    </insert>
+
+    <update id="update" parameterType="com.shh.persistence.entity.CrudEntity">
+        update ${tableName}
+        <set>
+            <foreach item="value" index="key" collection="paraMap"
+                     separator=",">
+                ${key} = #{value}
+            </foreach>
+        </set>
+        where ${primKey} = #{primVal}
+    </update>
+
+    <delete id="deleteById" parameterType="com.shh.persistence.entity.CrudEntity">
+        delete from ${tableName} where ${primKey} = #{primVal}
+    </delete>
+
+
+    <!--
+        <insert id="insert" parameterType="map">
+            insert into ${tableName}
+            <foreach item="item" index="index" collection="SQLColumns"
+                     open="(" separator="," close=")">
+                ${item.columnName}
+            </foreach>
+            values
+            <foreach item="item" index="index" collection="SQLColumns"
+                     open="(" separator="," close=")">
+                <if test="item.jdbcType == null">
+                    #{item.columnValue}
+                </if>
+                <if test="item.jdbcType != null">
+                    #{item.columnValue,jdbcType=${item.jdbcType} }
+                </if>
+            </foreach>
+        </insert>
+
+        <insert id="insertBatch" parameterType="map">
+            insert into ${tableName}
+            <foreach item="columnName" index="index" collection="columnNames"
+                     open="(" separator="," close=")">
+                ${columnName}
+            </foreach>
+            values
+            <foreach item="SQLColumns" index="rowIndex" collection="dataList"
+                     separator=",">
+                <foreach item="SQLColumn" index="columnIndex" collection="SQLColumns"
+                         open="(" separator="," close=")">
+                    <if test="SQLColumn.jdbcType == null">
+                        #{SQLColumn.columnValue}
+                    </if>
+                    <if test="SQLColumn.jdbcType != null">
+                        #{SQLColumn.columnValue,jdbcType=${SQLColumn.jdbcType} }
+                    </if>
+                </foreach>
+            </foreach>
+        </insert>
+
+        <delete id="deleteByPrimaryKey" parameterType="map">
+        <![CDATA[
+
+
+                        delete from ${tableName}
+                        where ${primaryKey} = #{primaryValue}
+
+
+            ]]>
+        </delete>
+
+        <delete id="deleteByCondition" parameterType="map">
+        <![CDATA[
+
+
+                        delete from ${tableName}
+                        where ${conditionExp}
+
+
+            ]]>
+        </delete>
+
+        <update id="updateByPrimaryKey">
+            update ${tableName}
+            <set>
+                <foreach item="item" index="index" collection="SQLColumns"
+                         separator=",">
+                    <if test="item.jdbcType == null">
+                        ${item.columnName} =
+                        #{item.columnValue }
+                    </if>
+                    <if test="item.jdbcType != null">
+                        ${item.columnName} =
+                        #{item.columnValue,jdbcType=${item.jdbcType} }
+                    </if>
+                </foreach>
+            </set>
+            where ${primaryKey} = #{primaryValue}
+        </update>
+
+        <update id="updateByConditionSelective">
+            update ${tableName}
+            <set>
+                <foreach item="columnValue" index="columnName" collection="columnValueMapping"
+                         separator=",">
+                    ${columnName} = #{columnValue}
+                </foreach>
+            </set>
+            <where>
+                <if test="conditionExp != null">
+                    ${conditionExp}
+                </if>
+            </where>
+        </update>
+
+        <select id="selectAdvanced" parameterType="map" resultType="hashmap">
+            select
+            <foreach item="columnName" index="index" collection="queryColumn"
+                     separator=",">
+                ${columnName}
+            </foreach>
+            from ${tableName}
+            <where>
+                <if test="conditionExp != null">
+                    ${conditionExp}
+                </if>
+            </where>
+
+            <if test="orderExp != null">
+                order by ${orderExp}
+            </if>
+
+            <if test="page != null">
+                limit #{page.startRowNo},#{page.pageSize}
+            </if>
+        </select>
+    -->
+</mapper>

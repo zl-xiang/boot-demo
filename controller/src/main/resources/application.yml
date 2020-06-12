@@ -1,0 +1,17 @@
+server:
+  port: 8080
+
+#database
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/ms_tour?useAffectedRows=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false&useAffectedRows=true
+    username: root
+    password: password
+
+#mybatis
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.shh.persistence.entity
+  config-location: classpath:mybatis-config.xml
+
