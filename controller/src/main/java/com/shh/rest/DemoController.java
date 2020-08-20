@@ -18,7 +18,6 @@ public class DemoController {
 
     @GetMapping("test")
     public String test() {
-
-        return demoService.hello("arseBurger!");
+        return demoService.hello("1231244");
     }
 }
