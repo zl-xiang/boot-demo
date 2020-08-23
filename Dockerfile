@@ -1,12 +1,15 @@
 #Dockerfile
 FROM openjdk:8 AS jdk
 ARG JAR_DIR=target/*.jar
-WORKDIR /src
+#creating work directory
+WORKDIR /web-api
+EXPOSE 8080
+#mounting a volume provided by host machine
+VOLUME /src
 
-COPY ./common/${JAR_DIR} src/common
-COPY ./controller/${JAR_DIR} src/controller
-COPY ./persistence/${JAR_DIR} src/persistence
-COPY ./service/${JAR_DIR} src/service
+ADD src/controller/${JAR_DIR} web-api.jar
+
+ENTRYPOINT ["java","-jar","web-api.jar"]
 
 
 
