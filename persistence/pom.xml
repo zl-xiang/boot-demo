@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <mysql.version>8.0.13</mysql.version>
+        <mysql.version>8.0.16</mysql.version>
         <mybatis.ver>2.1.3</mybatis.ver>
         <lombok.ver>1.18.12</lombok.ver>
     </properties>

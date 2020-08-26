@@ -7,7 +7,7 @@ EXPOSE 8080
 #mounting a volume provided by host machine
 VOLUME /src
 
-ADD src/controller/${JAR_DIR} web-api.jar
+ADD ["controller/${JAR_DIR}","web-api.jar"]
 
 ENTRYPOINT ["java","-jar","web-api.jar"]
 
