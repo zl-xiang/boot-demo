@@ -1,4 +1,3 @@
-Jenkinsfile
 pipeline {
     agent { docker 'maven:3.6-openjdk-8' }
     stages {
