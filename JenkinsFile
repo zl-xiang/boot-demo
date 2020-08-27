@@ -1,14 +1,22 @@
 pipeline {
     agent any
+
+    tools {
+        maven "local_mvn"
+    }
+
     stages {
         stage('build') {
-        steps{
-             withMaven(
-                    maven: 'local_mvn',
-                    mavenSettingsConfig: 'MyGlobalSettings') {
-                       sh "mvn clean install"
-                }
-             }
+            steps {
+              sh "mvn -version"
+              sh "mvn clean install"
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
         }
     }
 }
