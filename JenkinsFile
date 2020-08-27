@@ -3,6 +3,7 @@ pipeline {
 
     tools {
         maven "local_mvn"
+        mavenSettingsConfig: "MyGlobalSettings"
     }
 
     stages {
