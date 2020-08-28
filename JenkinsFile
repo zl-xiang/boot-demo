@@ -1,10 +1,11 @@
 pipeline {
-    agent any
-
-    tools {
-        maven "local_mvn"
+    agent {
+        docker{
+            image 'maven:3.6.0'
+            args '-v /home/ubuntu/Web/maven/.m2:/var/jenkins_home/downloads/.m2'
+        }
     }
-
+    
     stages {
         stage('build') {
             steps {
