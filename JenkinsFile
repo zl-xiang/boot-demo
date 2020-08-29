@@ -1,8 +1,11 @@
 pipeline {
+    environment{
+        JAVA_TOOL_OPTIONS = "Duser.home=/var/maven"
+    }
     agent {
         docker{
             image 'maven:3.6-openjdk-8'
-            args '-v /home/ubuntu/Web/maven/.m2:/var/jenkins_home/downloads/.m2'
+            args '-v /home/Web/maven/.m2:/var/maven/.m2 -e MAVEN_CONFIG=/var/maven/.m2'
         }
     }
 
@@ -12,6 +15,12 @@ pipeline {
               sh "mvn -version"
               sh "mvn clean install -U"
             }
+        }
+    }
+
+    post{
+        always{
+            cleanWs()
         }
     }
 
