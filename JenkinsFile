@@ -10,12 +10,19 @@ pipeline {
     }
 
     stages {
-        stage('build') {
+        stage('package') {
             steps {
               sh "mvn -version"
               sh "mvn clean install -U"
             }
         }
+        stage('build'){
+            steps{
+               sh "pwd"
+            }
+
+        }
+
     }
 
     post{
