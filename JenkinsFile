@@ -19,8 +19,14 @@ pipeline {
         stage('build'){
             steps{
                sh "pwd"
+               sh "docker build -t shhp-api ."
             }
-
+        }
+        stage("run"){
+            steps{
+               sh "docker run -it -d -p 8836:8080 -v /home/Web/app/shhp-api/src:/src shhp-api"
+               sh "docker ps"
+            }
         }
 
     }
