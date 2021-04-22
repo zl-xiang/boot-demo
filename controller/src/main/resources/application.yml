@@ -5,9 +5,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://www.borepular.fun:3678/shhp
-    username: root
-    password: k567bb8975
+    url: jdbc:mysql://url.com
     # Hikari 连接池配置
     # 最小空闲连接数量
     hikari:
